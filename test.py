@@ -1,6 +1,5 @@
 import pandas as pd
-from dataclasses import dataclass, field
-from typing import Set
+from dataclasses import dataclass
 #from typing import List
 #from datetime import datetime
 #
@@ -34,6 +33,7 @@ def get_key_stats(key):
     for row_tuple in epg_stat.itertuples():
         key_val = getattr(row_tuple, key)
         duration = row_tuple.duration
+
         client = row_tuple.client
         if key_val not in stats:
             stats[key_val] = stat(0, 0)
@@ -42,7 +42,11 @@ def get_key_stats(key):
         stats[key_val].duration += duration
         unique_users[key_val].add(client)
         stats[key_val].unique_users_number = len(unique_users[key_val])
-    return stats
+
+    res = [f'{key};duration;unique_users_number']
+    for k, v in stats.items():
+        res.append(f'{k};{v.duration};{v.unique_users_number}')
+    return res
     
 
 
